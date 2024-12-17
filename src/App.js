@@ -6,6 +6,8 @@ import Sidebar from './components/Sidebar/Sidebar';
 import ErrorPage from './components/ErrorPage/ErrorPage';
 import NoResultFound from './components/NoResultFound/NoResultFound';
 import Pagination from './components/Pagination/Pagination';
+import { MdOutlineGridView } from 'react-icons/md';
+import { CiGrid2H } from 'react-icons/ci';
 import './App.css';
 import filenames from './ProfilesList.json';
 
@@ -127,13 +129,26 @@ function App() {
     const paginatedData = getPaginatedData();
     return paginatedData.map((currentRecord, index) => <Profile data={currentRecord} key={index} />);
   };
+  const [viewType, setViewType] = useState('grid');
 
   return currentUrl === '/' ? (
     <div className="App flex flex-col bg-primaryColor dark:bg-secondaryColor md:flex-row">
       <Sidebar />
       <div className="w-full pl-5 pr-4 md:h-screen md:w-[77%] md:overflow-y-scroll md:py-7" ref={profilesRef}>
         <Search onSearch={handleSearch} />
-        {profiles.length === 0 && searching ? <NoResultFound /> : renderProfiles()}
+        <button
+          className="mb-4 rounded bg-blue-500 p-2 text-lg text-white"
+          onClick={() => setViewType(viewType === 'grid' ? 'column' : 'grid')}
+        >
+          {viewType === 'grid' ? <CiGrid2H /> : <MdOutlineGridView />}
+        </button>
+
+        <div
+          className={`dev-profiles-wraper flex ${viewType === 'grid' ? 'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3' : 'flex-col'}`}
+        >
+          {profiles.length === 0 && searching ? <NoResultFound /> : renderProfiles()}
+        </div>
+
         {(searching ? profiles.length : shuffledProfiles.length) > 0 && (
           <Pagination
             currentPage={currentPage}
